@@ -14,30 +14,23 @@ if ($_POST)
 		
 		//execute the query
 		 if(false == $stmt->execute()) {
-		 	//echo "Unable to execute";
+		 	printf("Unable to validate login");
 		 }
 		 else {
-		 		 	//printf( "ok to execute \n");
-					//echo $stmt->num_rows;
-		 }
-		 
-		 //bind result variable
-		 $stmt->bind_result($id);
-		 
-		 //echo "Will fetch result \n";
-		  
-		 if($stmt->fetch()) {
-		 	//echo "Inside if statement \n";
-		 	$_SESSION['cuser'] = $email;
-			$_SESSION['cuserid'] = $id;
-			//echo $id;
-			header('Location:home.php');
-		 } 
-		 else{
-		 	printf("No rows found! \n");
-			printf("Incorrect email/password");
+			 //bind result variable
+			 $stmt->bind_result($id);
+					  
+			 if($stmt->fetch()) {
+				$_SESSION['cuser'] = $email;
+				$_SESSION['cuserid'] = $id;
+				header('Location:home.php');
+			 } 
+			 else{
+				printf("No rows found! \n");
+				printf("Incorrect email/password");
+			}
+			$stmt->close();
 		}
-		$stmt->close();
 	}
 	else{
 		echo "Unable to validate login";
