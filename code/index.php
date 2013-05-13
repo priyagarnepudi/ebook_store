@@ -1,30 +1,47 @@
 <?php
-session_start();
+session_start(); 
 require 'connect.php';
 
 if ($_POST)
 {
-
 	$email = $_POST['email'];
 	$pass = $_POST['password'];
 	
-	
-	$result = mysqli_query($con,"SELECT * FROM user WHERE email='" .$email."' and password='" .$pass. "'");
-	if($result){
-		$row = mysqli_fetch_array($result);
-		if($row){
-			$_SESSION['cuser'] = $email;
-			$_SESSION['cuserid'] = $row['id'];
+	//create a prepared statement
+	if ($stmt = $con->prepare("SELECT id FROM user WHERE email=? and password=?")) {
+		//bind parameters for email and password
+		$stmt->bind_param("ss", $email, $pass);
+		
+		//execute the query
+		 if(false == $stmt->execute()) {
+		 	//echo "Unable to execute";
+		 }
+		 else {
+		 		 	//printf( "ok to execute \n");
+					//echo $stmt->num_rows;
+		 }
+		 
+		 //bind result variable
+		 $stmt->bind_result($id);
+		 
+		 //echo "Will fetch result \n";
+		  
+		 if($stmt->fetch()) {
+		 	//echo "Inside if statement \n";
+		 	$_SESSION['cuser'] = $email;
+			$_SESSION['cuserid'] = $id;
+			//echo $id;
 			header('Location:home.php');
-
-		}else{
-			echo "Incorrect email/password";
+		 } 
+		 else{
+		 	printf("No rows found! \n");
+			printf("Incorrect email/password");
 		}
-	}else{
-		echo "Incorrect email/password";
+		$stmt->close();
 	}
-	
-
+	else{
+		echo "Unable to validate login";
+	}
 }
 ?>
 
