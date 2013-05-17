@@ -11,6 +11,11 @@
 		$result = mysqli_query($con,"SELECT * FROM user WHERE email = '$email'");
 		if($result->num_rows == 1){
 			echo "You are already registered!";
+		}
+		else{
+			 //create a prepared statement;
++  			$stmt = $con->prepare("insert into user(first_name,last_name, email, password) values (?,?,?,?)");
++    		//bind parameters for email and password;
 
 		}else{
 
@@ -19,6 +24,12 @@
 				die( 'Error: '. mysqli_error() );
 			}else{
 				header('Location:index.php');
++    		$stmt->bind_param("ssss", $fname, $lname, $email, $password);
++    
++    		//execute the query;
++     		$stmt->execute(); 
++       	header('Location:home.php');
+ 			$stmt->close();
 			}
 		}
 
